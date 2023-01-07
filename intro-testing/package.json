@@ -1,0 +1,17 @@
+{
+  "name": "introduction-to-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "add.js",
+  "scripts": {
+    "test": "jest --coverage --watchAll"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^24.7.0",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0"
+  }
+}
