@@ -1,21 +1,22 @@
-import { Link } from 'react-router-dom';
-import logo from '../assets/hoaxify.png';
-import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../api/apiCalls';
-import { logoutSuccess } from '../state/authActions';
-const NavBar = (props) => {
+import { Link } from "react-router-dom";
+import logo from "../assets/hoaxify.png";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../api/apiCalls";
+import { logoutSuccess } from "../state/authActions";
+
+const NavBar = props => {
   const { t } = useTranslation();
-  const auth = useSelector((store) => store);
+  const auth = useSelector(store => store);
   const dispatch = useDispatch();
 
-  const onClickLogout = async (event) => {
-    event.preventDefault();
-    try {
-      await logout();
-    } catch (error) {}
-    dispatch(logoutSuccess());
-  };
+  // const onClickLogout = async event => {
+  //   event.preventDefault();
+  //   try {
+  //     await logout();
+  //   } catch (error) {}
+  //   dispatch(logoutSuccess());
+  // };
 
   return (
     <nav className="navbar navbar-expand navbar-light bg-light shadow-sm">
@@ -25,17 +26,17 @@ const NavBar = (props) => {
           Hoaxify
         </Link>
         <ul className="navbar-nav">
-          {!auth.isLoggedIn && (
-            <>
-              <Link className="nav-link" to="/signup">
-                {t('signUp')}
-              </Link>
-              <Link className="nav-link" to="/login">
-                {t('login')}
-              </Link>
-            </>
-          )}
-          {auth.isLoggedIn && (
+          {/* {!auth.isLoggedIn && ( */}
+          <>
+            <Link className="nav-link" to="/signup">
+              {t("signUp")}
+            </Link>
+            <Link className="nav-link" to="/login">
+              {t("login")}
+            </Link>
+          </>
+          {/* )} */}
+          {/* {auth.isLoggedIn && (
             <>
               <Link className="nav-link" to={`/user/${auth.id}`}>
                 My Profile
@@ -44,7 +45,7 @@ const NavBar = (props) => {
                 Logout
               </a>
             </>
-          )}
+          )} */}
         </ul>
       </div>
     </nav>
