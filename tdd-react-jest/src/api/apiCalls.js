@@ -3,8 +3,11 @@ import i18n from "../locale/i18n";
 import { store } from "../state/store";
 
 axios.interceptors.request.use(request => {
+  // setting request header language to be current user preferred language
   request.headers["Accept-Language"] = i18n.language;
+
   const { header } = store.getState();
+
   if (header) {
     request.headers["Authorization"] = header;
   }

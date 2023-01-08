@@ -1,6 +1,8 @@
 import { Component } from "react";
 import Input from "../components/Input";
+
 import { withTranslation } from "react-i18next";
+
 import { signUp } from "../api/apiCalls";
 import Alert from "../components/Alert";
 import ButtonWithProgress from "../components/ButtonWithProgress";
@@ -95,7 +97,7 @@ class SignUpPage extends Component {
                 help={passwordMismatch}
                 type="password"
               />
-              <div className="text-center">
+              <div className="text-center" style={{ cursor: "pointer" }}>
                 <ButtonWithProgress disabled={disabled} apiProgress={apiProgress} onClick={this.submit}>
                   {t("signUp")}
                 </ButtonWithProgress>

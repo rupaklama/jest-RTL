@@ -20,12 +20,16 @@ let acceptLanguageHeader;
 
 const server = setupServer(
   rest.post("/api/1.0/users", (req, res, ctx) => {
+    // accessing request object
     requestBody = req.body;
 
-    // api counter on every request
+    // to track api call
     counter += 1;
 
-    // acceptLanguageHeader = req.headers.get("Accept-Language");
+    // NOTE: Backend requires Client to send the 'acceptLanguageHeader' with the user prefer language
+    // and based on that, the backend will send response in that particular language
+    acceptLanguageHeader = req.headers.get("Accept-Language");
+
     return res(ctx.status(200));
   })
 );
@@ -282,6 +286,21 @@ describe("Sign Up Page", () => {
       expect(validationError).toBeInTheDocument();
     });
 
+    // note - client side error validation
+    it("displays mismatch message for password repeat input", () => {
+      render(<SignUpPage />);
+
+      const passwordInput = screen.getByLabelText("Password");
+      userEvent.type(passwordInput, "myPassword");
+
+      const passwordRepeatInput = screen.getByLabelText("Password Repeat");
+      userEvent.type(passwordRepeatInput, "AnotherPassword");
+
+      userEvent.click(button);
+
+      expect(screen.queryByText("Password mismatch")).toBeInTheDocument();
+    });
+
     // it("displays validation error message for username", async () => {
     //   // overriding api to send error response
     //   server.use(
@@ -355,6 +374,192 @@ describe("Sign Up Page", () => {
       expect(screen.queryByRole("status")).not.toBeInTheDocument();
 
       expect(button).toBeEnabled();
+    });
+
+    it("clears validation error after username field is updated", async () => {
+      // overriding api to send error response
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            // mocking json response data
+            ctx.json({
+              validationErrors: {
+                username: "Username cannot be null",
+              },
+            })
+          );
+        })
+      );
+
+      setup();
+
+      userEvent.click(button);
+
+      // expect response to be in the dom
+      await screen.findByText("Username cannot be null");
+
+      // Re-typing the value again
+      const usernameInput = screen.getByRole("textbox", { name: /username/i });
+      userEvent.type(usernameInput, "admin-name-updated");
+
+      expect(screen.queryByText("Username cannot be null")).not.toBeInTheDocument();
+    });
+
+    it("clears validation error after email field is updated", async () => {
+      // overriding api to send error response
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            // mocking json response data
+            ctx.json({
+              validationErrors: {
+                email: "E-mail is not valid",
+              },
+            })
+          );
+        })
+      );
+
+      setup();
+
+      userEvent.click(button);
+
+      // expect response to be in the dom
+      await screen.findByText("E-mail is not valid");
+
+      // Re-typing the value again
+      const emailInput = screen.getByRole("textbox", { name: /e-mail/i });
+      userEvent.type(emailInput, "new@new.com");
+
+      expect(screen.queryByText("E-mail is not valid")).not.toBeInTheDocument();
+    });
+
+    it("clears validation error after password field is updated", async () => {
+      // overriding api to send error response
+      server.use(
+        rest.post("/api/1.0/users", (req, res, ctx) => {
+          return res(
+            ctx.status(400),
+            // mocking json response data
+            ctx.json({
+              validationErrors: {
+                password: "Password must be at least 6 characters",
+              },
+            })
+          );
+        })
+      );
+
+      setup();
+
+      userEvent.click(button);
+
+      // expect response to be in the dom
+      await screen.findByText("Password must be at least 6 characters");
+
+      // Re-typing the value again
+      const passwordInput = screen.getByLabelText("Password");
+      userEvent.type(passwordInput, "myPassword");
+
+      expect(screen.queryByText("Password must be at least 6 characters")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Internationalization", () => {
+    it("initially displays all text in English", () => {
+      render(<SignUpPage />);
+      // note - using locale file for text
+      expect(screen.getByRole("heading", { name: en.signUp })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: en.username })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: en.email })).toBeInTheDocument();
+      expect(screen.getByLabelText(en.password)).toBeInTheDocument();
+      expect(screen.getByLabelText(en.passwordRepeat)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: en.signup })).toBeInTheDocument();
+    });
+
+    it("displays all text in Turkish after changing the language", () => {
+      render(<SignUpPage />);
+      const languageButton = screen.getByAltText("Turkish Flag");
+      expect(languageButton).toBeInTheDocument();
+
+      userEvent.click(languageButton);
+
+      expect(screen.getByRole("heading", { name: tr.signUp })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: tr.username })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: tr.email })).toBeInTheDocument();
+      expect(screen.getByLabelText(tr.password)).toBeInTheDocument();
+      expect(screen.getByLabelText(tr.passwordRepeat)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: tr.signup })).toBeInTheDocument();
+    });
+
+    it("displays all text in English after changing the language", () => {
+      render(<SignUpPage />);
+      const languageButton = screen.getByAltText("Great Britain Flag");
+      expect(languageButton).toBeInTheDocument();
+
+      userEvent.click(languageButton);
+
+      expect(screen.getByRole("heading", { name: en.signUp })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: en.username })).toBeInTheDocument();
+      expect(screen.getByRole("textbox", { name: en.email })).toBeInTheDocument();
+      expect(screen.getByLabelText(en.password)).toBeInTheDocument();
+      expect(screen.getByLabelText(en.passwordRepeat)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: en.signup })).toBeInTheDocument();
+    });
+
+    it("displays password mismatch validation in Turkish", () => {
+      render(<SignUpPage />);
+
+      const passwordInput = screen.getByLabelText(en.password);
+      userEvent.type(passwordInput, "myPassword");
+
+      const passwordRepeatInput = screen.getByLabelText(en.passwordRepeat);
+      userEvent.type(passwordRepeatInput, "Password");
+
+      const languageButton = screen.getByAltText("Turkish Flag");
+      userEvent.click(languageButton);
+
+      expect(screen.getByText(tr.passwordMismatchValidation)).toBeInTheDocument();
+    });
+
+    it("sends accept language header as 'en' by default on api call", async () => {
+      render(<SignUpPage />);
+
+      const passwordInput = screen.getByLabelText(en.password);
+      userEvent.type(passwordInput, "myPassword");
+
+      const passwordRepeatInput = screen.getByLabelText(en.passwordRepeat);
+      userEvent.type(passwordRepeatInput, "myPassword");
+
+      const button = screen.getByRole("button", { name: en.signup });
+
+      userEvent.click(button);
+
+      await waitForElementToBeRemoved(screen.queryByTestId("form-sign-up"));
+
+      expect(acceptLanguageHeader).toBe("en");
+    });
+
+    it("sends accept language header as 'tr' on api call after selecting language", async () => {
+      render(<SignUpPage />);
+
+      const passwordInput = screen.getByLabelText(en.password);
+      userEvent.type(passwordInput, "myPassword");
+
+      const passwordRepeatInput = screen.getByLabelText(en.passwordRepeat);
+      userEvent.type(passwordRepeatInput, "myPassword");
+
+      const languageButton = screen.getByAltText("Turkish Flag");
+      userEvent.click(languageButton);
+
+      const button = screen.getByRole("button", { name: en.signup });
+      userEvent.click(button);
+
+      await waitForElementToBeRemoved(screen.queryByTestId("form-sign-up"));
+
+      expect(acceptLanguageHeader).toBe("tr");
     });
   });
 });
