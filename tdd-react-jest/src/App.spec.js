@@ -1,12 +1,12 @@
 import { render, screen, waitFor } from "./test/setup";
-import App from "./App";
+
 import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
+
 import storage from "./state/storage";
 
-// let logoutCount = 0;
-// let header;
+import App from "./App";
 
 describe("<App /> component", () => {
   it("renders without an error", () => {
@@ -42,28 +42,6 @@ describe("<App /> component", () => {
   });
 });
 
-// const server = setupServer(
-//   rest.post('/api/1.0/users/token/:token', (req, res, ctx) => {
-//     return res(ctx.status(200));
-//   }),
-//   rest.get('/api/1.0/users', (req, res, ctx) => {
-//     return res(
-//       ctx.status(200),
-//       ctx.json({
-//         content: [
-//           {
-//             id: 1,
-//             username: 'user-in-list',
-//             email: 'user-in-list@mail.com',
-//             image: null
-//           }
-//         ],
-//         page: 0,
-//         size: 0,
-//         totalPages: 0
-//       })
-//     );
-//   }),
 //   rest.get('/api/1.0/users/:id', (req, res, ctx) => {
 //     header = req.headers.get('Authorization');
 //     const id = Number.parseInt(req.params.id);

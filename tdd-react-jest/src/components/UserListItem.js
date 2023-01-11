@@ -1,21 +1,17 @@
-import { withRouter } from 'react-router-dom';
-import defaultProfileImage from '../assets/profile.png';
+import { withRouter } from "react-router-dom";
+import defaultProfileImage from "../assets/profile.png";
 
-const UserListItem = (props) => {
+const UserListItem = props => {
   const { user, history } = props;
+  // console.log(user);
 
   return (
     <li
       className="list-group-item list-group-item-action"
       onClick={() => history.push(`/user/${user.id}`)}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: "pointer" }}
     >
-      <img
-        src={defaultProfileImage}
-        alt="profile"
-        width="30"
-        className="rounded-circle shadow-sm"
-      />
+      <img src={defaultProfileImage} alt="profile" width="30" className="rounded-circle shadow-sm" />
       {user.username}
     </li>
   );

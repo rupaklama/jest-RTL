@@ -21,7 +21,7 @@
   "editor.suggest.filterGraceful": false,
   "editor.lineNumbers": "off",
   "problems.decorations.enabled": false,
-  "workbench.activityBar.visible": false,
+  "workbench.activityBar.visible": true,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "zenMode.centerLayout": false,

@@ -1,14 +1,14 @@
-import defaultProfileImage from '../assets/profile.png';
-import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
-import Input from './Input';
-import ButtonWithProgress from './ButtonWithProgress';
-import Modal from './Modal';
-import { updateUser, deleteUser } from '../api/apiCalls';
-import { useHistory } from 'react-router-dom';
-import { updateSuccess, logoutSuccess } from '../state/authActions';
+import defaultProfileImage from "../assets/profile.png";
+import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+import Input from "./Input";
+import ButtonWithProgress from "./ButtonWithProgress";
+import Modal from "./Modal";
+import { updateUser, deleteUser } from "../api/apiCalls";
+import { useHistory } from "react-router-dom";
+import { updateSuccess, logoutSuccess } from "../state/authActions";
 
-const ProfileCard = (props) => {
+const ProfileCard = props => {
   const [inEditMode, setEditMode] = useState(false);
   const [deleteApiProgress, setDeleteApiProgress] = useState(false);
   const [updateApiProgress, setUpdateApiProgress] = useState(false);
@@ -19,9 +19,9 @@ const ProfileCard = (props) => {
   const { user } = props;
   const [newUsername, setNewUsername] = useState(user.username);
 
-  const { id, username } = useSelector((store) => ({
+  const { id, username } = useSelector(store => ({
     id: store.id,
-    username: store.username
+    username: store.username,
   }));
 
   const onClickSave = async () => {
@@ -31,7 +31,7 @@ const ProfileCard = (props) => {
       setEditMode(false);
       dispatch(
         updateSuccess({
-          username: newUsername
+          username: newUsername,
         })
       );
     } catch (error) {}
@@ -46,7 +46,7 @@ const ProfileCard = (props) => {
     setDeleteApiProgress(true);
     try {
       await deleteUser(id);
-      history.push('/');
+      history.push("/");
       dispatch(logoutSuccess());
     } catch (error) {}
 
@@ -62,14 +62,11 @@ const ProfileCard = (props) => {
           label="Change your username"
           id="username"
           initialValue={newUsername}
-          onChange={(event) => setNewUsername(event.target.value)}
+          onChange={event => setNewUsername(event.target.value)}
         />
-        <ButtonWithProgress
-          onClick={onClickSave}
-          apiProgress={updateApiProgress}
-        >
+        <ButtonWithProgress onClick={onClickSave} apiProgress={updateApiProgress}>
           Save
-        </ButtonWithProgress>{' '}
+        </ButtonWithProgress>{" "}
         <button className="btn btn-outline-secondary" onClick={onClickCancel}>
           Cancel
         </button>
@@ -82,18 +79,12 @@ const ProfileCard = (props) => {
         {user.id === id && (
           <>
             <div>
-              <button
-                className="btn btn-outline-success"
-                onClick={() => setEditMode(true)}
-              >
+              <button className="btn btn-outline-success" onClick={() => setEditMode(true)}>
                 Edit
               </button>
             </div>
             <div className="pt-2">
-              <button
-                className="btn btn-danger"
-                onClick={() => setModalVisible(true)}
-              >
+              <button className="btn btn-danger" onClick={() => setModalVisible(true)}>
                 Delete My Account
               </button>
             </div>
@@ -109,7 +100,7 @@ const ProfileCard = (props) => {
         <div className="card-header">
           <img
             src={defaultProfileImage}
-            alt="profile"
+            alt="profile card"
             width="200"
             height="200"
             className="rounded-circle shadow"

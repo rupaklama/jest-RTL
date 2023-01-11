@@ -27,6 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --detectOpenHandles=true",
     "coverage": "npm test -- --coverage",
+    "test:coverage": "CI=true npm test -- --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
