@@ -12,5 +12,6 @@ afterEach(() => {
   act(() => {
     i18n.changeLanguage("en");
   });
-  // storage.clear();
+  storage.clear();
+  // localStorage.clear();
 });

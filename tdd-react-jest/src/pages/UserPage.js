@@ -1,14 +1,14 @@
-import { Component } from 'react';
-import { getUserById } from '../api/apiCalls';
-import ProfileCard from '../components/ProfileCard';
-import Spinner from '../components/Spinner';
-import Alert from '../components/Alert';
+import { Component } from "react";
+import { getUserById } from "../api/apiCalls";
+import ProfileCard from "../components/ProfileCard";
+import Spinner from "../components/Spinner";
+import Alert from "../components/Alert";
 
 class UserPage extends Component {
   state = {
     user: {},
     pendingApiCall: false,
-    failResponse: undefined
+    failResponse: undefined,
   };
 
   componentDidMount() {
@@ -23,12 +23,14 @@ class UserPage extends Component {
 
   loadUser = async () => {
     this.setState({ pendingApiCall: true });
+
     try {
       const response = await getUserById(this.props.match.params.id);
       this.setState({ user: response.data });
     } catch (error) {
       this.setState({ failResponse: error.response.data.message });
     }
+
     this.setState({ pendingApiCall: false });
   };
 
@@ -40,6 +42,7 @@ class UserPage extends Component {
         <Spinner size="big" />
       </Alert>
     );
+
     if (!pendingApiCall) {
       if (failResponse) {
         content = (

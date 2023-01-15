@@ -1,10 +1,13 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import LanguageSelector from '../components/LanguageSelector';
-import { Provider } from 'react-redux';
-import createStore from '../state/store';
+import React from "react";
+import { render } from "@testing-library/react";
+import { BrowserRouter as Router } from "react-router-dom";
+import LanguageSelector from "../components/LanguageSelector";
+import { Provider } from "react-redux";
+import createStore from "../state/store";
 
+// note - store setup
+
+// redux state wrapper
 const RootWrapper = ({ children }) => {
   return (
     <Router>
@@ -16,9 +19,10 @@ const RootWrapper = ({ children }) => {
   );
 };
 
-const customRender = (ui, options) =>
-  render(ui, { wrapper: RootWrapper, ...options });
+const customRender = (ui, options) => render(ui, { wrapper: RootWrapper, ...options });
 
-export * from '@testing-library/react';
+// re-export everything
+export * from "@testing-library/react";
 
+// override default rtl render method with our custom wrapper render above
 export { customRender as render };
